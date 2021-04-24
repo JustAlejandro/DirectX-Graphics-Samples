@@ -14,12 +14,12 @@
 #include <DirectXMath.h>
 #include <vector>
 
-enum Flags : uint32_t
+enum Flags : uint32_t 
 {
     CNORM_WIND_CW = 0x4
 };
 
-struct Subset
+struct Subset 
 {
     uint32_t Offset;
     uint32_t Count;
@@ -33,9 +33,9 @@ struct Meshlet
     uint32_t PrimOffset;
 };
 
-union PackedTriangle
+union PackedTriangle 
 {
-    struct
+    struct 
     {
         uint32_t i0 : 10;
         uint32_t i1 : 10;
@@ -45,7 +45,7 @@ union PackedTriangle
     uint32_t packed;
 };
 
-struct CullData
+struct CullData 
 {
     DirectX::XMFLOAT4 BoundingSphere; // xyz = center, w = radius
     uint8_t           NormalCone[4];  // xyz = axis, w = sin(a + 90)
@@ -55,7 +55,7 @@ struct CullData
 
 HRESULT ComputeMeshlets(
     uint32_t maxVerts, uint32_t maxPrims,
-    const uint16_t* indices, uint32_t nFaces, 
+    const uint16_t* indices, uint32_t nFaces,
     const Subset* indexSubsets, uint32_t nSubsets,
     const DirectX::XMFLOAT3* positions, uint32_t nVerts,
     std::vector<Subset>& meshletSubsets,
@@ -75,7 +75,7 @@ HRESULT ComputeMeshlets(
 
 HRESULT ComputeMeshlets(
     uint32_t maxVerts, uint32_t maxPrims,
-    const uint16_t* indices, uint32_t nFaces, 
+    const uint16_t* indices, uint32_t nFaces,
     const DirectX::XMFLOAT3* positions, uint32_t nVerts,
     std::vector<Subset>& meshletSubsets,
     std::vector<Meshlet>& meshlets,
@@ -84,7 +84,7 @@ HRESULT ComputeMeshlets(
 
 HRESULT ComputeMeshlets(
     uint32_t maxVerts, uint32_t maxPrims,
-    const uint32_t* indices, uint32_t nFaces, 
+    const uint32_t* indices, uint32_t nFaces,
     const DirectX::XMFLOAT3* positions, uint32_t nVerts,
     std::vector<Subset>& meshletSubsets,
     std::vector<Meshlet>& meshlets,
@@ -93,7 +93,7 @@ HRESULT ComputeMeshlets(
 
 
 HRESULT ComputeCullData(
-    const DirectX::XMFLOAT3* positions, uint32_t nVerts,
+    DirectX::XMFLOAT3* positions, uint32_t nVerts,
     const Meshlet* meshlets, uint32_t nMeshlets,
     const uint16_t* uniqueVertexIndices,
     const PackedTriangle* primitiveIndices,
@@ -102,7 +102,7 @@ HRESULT ComputeCullData(
 );
 
 HRESULT ComputeCullData(
-    const DirectX::XMFLOAT3* positions, uint32_t nVerts,
+    DirectX::XMFLOAT3* positions, uint32_t nVerts,
     const Meshlet* meshlets, uint32_t nMeshlets,
     const uint32_t* uniqueVertexIndices,
     const PackedTriangle* primitiveIndices,
