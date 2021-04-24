@@ -1,4 +1,13 @@
+# Modifications made by JustAlejandro
+For the specific modifications I've made to the Meshlet generation algorithm, see 
+## [Mesh Shaders](https://github.com/JustAlejandro/DirectX-Graphics-Samples/tree/master/Samples/Desktop/D3D12MeshShaders)
 
+
+Features improvements to the meshlet generation algorithm to better encompass behaviour of what I've been calling self-occluding models.
+
+---
+# ORIGINAL MICROSOFT DOCUMENTATION FOLLOWS:
+---
 # DirectX-Graphics-Samples
 This repo contains the DirectX 12 Graphics samples that demonstrate how to build graphics intensive applications for Windows 10.
 
