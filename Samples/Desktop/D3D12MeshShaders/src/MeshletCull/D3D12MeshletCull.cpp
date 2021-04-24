@@ -22,7 +22,7 @@ namespace
 
     const wchar_t* c_modelFilenames[] = 
     { 
-        L"..\\Assets\\Dragon_LOD0.bin", 
+        L"..\\Assets\\ExtrudeDemo.bin", 
         L"..\\Assets\\Camera.bin" 
     };
 

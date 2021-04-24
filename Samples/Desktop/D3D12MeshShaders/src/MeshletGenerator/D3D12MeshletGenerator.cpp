@@ -339,16 +339,18 @@ bool DivetShift(std::vector<uint32_t>& divetCandidates, DirectX::XMFLOAT3  verti
 	for (auto& i : divetCandidates) {
 		XMVECTOR neighborSum = XMVectorZero();
 		XMFLOAT3 vertexBackup = vertices[i];
+		XMVECTOR vertexBackupVec = XMLoadFloat3(&vertices[i]);
 		std::vector<uint32_t>& connections = divetConnections[index];
 		for (auto& j : connections) {
 			neighborSum = XMVectorAdd(neighborSum, XMLoadFloat3(&vertices[j]));
 		}
 		XMVECTOR neighborAvg = XMVectorDivide(neighborSum, XMVectorReplicate((float)connections.size()));
 
-		if (XMVectorGetX(XMVector3LengthSq(XMVectorSubtract(XMLoadFloat3(&vertices[i]), neighborAvg))) <= 0.000001f) {
+		if (XMVectorGetX(XMVector3LengthSq(XMVectorSubtract(XMLoadFloat3(&vertices[i]), neighborAvg))) <= 0.00000001f) {
 			index++;
 			continue;
 		}
+
 
 		XMStoreFloat3(&vertices[i], neighborAvg);
 
@@ -361,7 +363,7 @@ bool DivetShift(std::vector<uint32_t>& divetCandidates, DirectX::XMFLOAT3  verti
 		bool shouldShift = true;
 		// Have to check that all b->a and b->c vecs are in the 'cullCopy'
 		for (auto& j : connections) {
-			XMVECTOR vecOut = XMVector3Normalize(XMVectorSubtract(XMLoadFloat3(&vertices[j]), neighborAvg));
+			XMVECTOR vecOut = XMVector3Normalize(XMVectorSubtract(XMLoadFloat3(&vertices[j]), vertexBackupVec));
 			// How it's done with shaders...
 			/*if (dot(view, -axis) > normalCone.w) {
 			return false;
@@ -453,7 +455,8 @@ void internal::ComputeCullDataForIndex(uint32_t mi, const Meshlet* meshlets, Cul
 
 	// Just for debug purposes...
 	// Uncache vertices
-#if true
+#define SHOULD_MOVE_OUTPUTTED_VERTICES false
+#if SHOULD_MOVE_OUTPUTTED_VERTICES
 	for (uint32_t i = 0; i < m.VertCount; ++i) {
 		uint32_t vIndex = uniqueVertexIndices[m.VertOffset + i];
 

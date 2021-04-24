@@ -12,6 +12,59 @@ extendedZipContent:
   target: LICENSE
 ---
 
+# Modifications made from Microsoft Source:
+This fork shows some changes that could be make to the meshlet baking process to add some efficiency. Overall impact of this change is somewhat minor, but it does increate meshlet cone culling efficiency in several use cases.
+
+The included visualizations are purely as a 'Best Case' for this change. Real world improvement is largely depending on the size of meshlets produced (meshlets with a max amount of indices close to 128 behave best, max amount of 32 behaves predicatably poorer). 
+
+Largely the benefits of this change come from the fact that this doesn't affect the actual runtime implementation of the DX12 Sample, just the baking (normal cone calculation) timing. Also this implementation is meant to be somewhat readable, so feel free to improve or use it however you want (so long as it complies with the original DX12-Samples license).
+
+## Visual of Normal Cone Size Reduction
+Model Used:
+
+<img src = "https://i.imgur.com/PSOtQoR.png">
+
+
+Original Code:
+
+<img src = "https://i.imgur.com/ZaygB0E.png">
+
+Alejandro Custom Divet Finder Code:
+
+Note: Normal 'cone' becomes a single line.
+
+<img src = "https://i.imgur.com/yLeBPaw.png">
+
+## Algorithmic Changes
+To increase the efficiency of the generated meshlet cones by this sample, rather than accept that all meshlets exist as an individual small 'model', we assume that any meshlet's backfaces are occluding (sort of a loose version of watertightness).
+
+So for example, assume we have a simple meshlet comprised of points A through E that looks like the drawing below.
+
+
+<img src ="https://i.imgur.com/NaFmkqi.png" alt="Meshlet Example">
+
+Say we have a Viewer with a view direction of V who is viewing the meshlet from behind the normal of A->B and D->E.
+
+<img src = "https://i.imgur.com/KpRwLh7.png">
+
+If our model is guaranteed  to be self-occluding, we can assume that some other meshlet would've blocked the visibility of the face made of C->D. An example of this would be the meshlet created by the red lines below.
+
+<img src = "https://i.imgur.com/7lfAaBp.png">
+
+Because of this basic assumption, we can create a simpler meshlet before generating a normal cone, by moving 'divet' points outward to be an average with their neighbors, so in the original example, moving point C to C' like this:
+
+<img src = "https://i.imgur.com/kt1LTFX.png">
+
+Now whenever we generate a normal cone for this meshlet we obtain a single line, rather than a cone that encompasses all the angles that B->C or C->D which would be occluded by the red meshlet anyway.
+
+## Usage Differences
+Using the tool is almost completely unchanged (minus the addition of multithreading to speed up exports), with a `SHOULD_MOVE_OUTPUTTED_VERTICES` def in D3D12MeshletGenerator controlling if you want to see the shifted vertices outputted, or the intended vertices (only really useful for debugging).
+
+---
+
+# ORIGINAL MICROSOFT DOCUMENTATION FOR THIS SAMPLE FOLLOWS:
+
+---
 # Direct3D 12 mesh shader samples
 This collection of projects act as an introduction to meshlets, and rendering with DirectX mesh shaders.
 
