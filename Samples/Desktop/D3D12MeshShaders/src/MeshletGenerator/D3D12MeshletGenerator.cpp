@@ -260,6 +260,7 @@ HRESULT ComputeNormalCone(
 		minDot = XMVectorMin(minDot, dot);
 	}
 
+	degen = false;
 	if (XMVector4Less(minDot, XMVectorReplicate(0.1f))) 
 	{
 		// Not setting directly since we will replace it later.
@@ -320,7 +321,6 @@ HRESULT ComputeNormalCone(
 	quantized = QuantizeUNorm(coneCutoff + error);
 	quantized = XMVectorMin(quantized + g_XMOne, XMVectorReplicate(255.0f));
 	c.NormalCone[3] = (uint8_t)XMVectorGetX(quantized);
-	degen = false;
 	return S_OK;
 }
 
@@ -466,6 +466,9 @@ void internal::ComputeCullDataForIndex(uint32_t mi, const Meshlet* meshlets, Cul
 #endif
 	// ************ Alejandro's Custom Divet Findy Fixer END *************
 	degen = false;
+
+	generateNormals(vertices, normals, m, primitiveIndices, flags);
+
 	ComputeNormalCone(meshlets, primitiveIndices, cullData, vertices, normals, mi, degen);
 	if (degen) {
 		// Degenerate cone
